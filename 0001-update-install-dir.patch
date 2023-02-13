@@ -1,0 +1,57 @@
+From cb61666e2c3bcf541b4e14be87208867ec90b02e Mon Sep 17 00:00:00 2001
+From: llamasking <21324788+llamasking@users.noreply.github.com>
+Date: Sat, 11 Feb 2023 04:19:59 -0800
+Subject: [PATCH] update install dir
+
+---
+ meson.build                                     | 2 +-
+ tudor-host-launcher/tudor-host-launcher.service | 4 ++--
+ tudor-host/src/sandbox.c                        | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 54d6dd9..b181d3f 100644
+--- a/meson.build
++++ b/meson.build
+@@ -3,7 +3,7 @@ project('synaTudor', ['c'],
+     meson_version: '>= 0.57.0'
+ )
+ 
+-INSTALL_DIR = '/sbin/tudor'
++INSTALL_DIR = '/usr/bin'
+ 
+ subdir('libtudor')
+ subdir('cli')
+diff --git a/tudor-host-launcher/tudor-host-launcher.service b/tudor-host-launcher/tudor-host-launcher.service
+index 29309df..444d1f5 100644
+--- a/tudor-host-launcher/tudor-host-launcher.service
++++ b/tudor-host-launcher/tudor-host-launcher.service
+@@ -4,8 +4,8 @@ Description=Tudor host launcher DBus service
+ [Service]
+ Type=dbus
+ BusName=net.reactivated.TudorHostLauncher
+-ExecStart=/sbin/tudor/tudor_host_launcher
+-WorkingDirectory=/sbin/tudor/
++ExecStart=/usr/bin/tudor_host_launcher
++WorkingDirectory=/usr/bin/
+ StateDirectory=tudor
+ StateDirectoryMode=0700
+ 
+diff --git a/tudor-host/src/sandbox.c b/tudor-host/src/sandbox.c
+index fd59969..4b4062f 100644
+--- a/tudor-host/src/sandbox.c
++++ b/tudor-host/src/sandbox.c
+@@ -114,8 +114,8 @@ static void unmount_root() {
+ #ifdef UNMOUNTFS
+     //Pivot root
+     cant_fail(mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, NULL));
+-    cant_fail(mount("/sbin/tudor", "/sbin/tudor", NULL, MS_BIND | MS_NOSUID | MS_RDONLY, NULL));
+-    cant_fail(chdir("/sbin/tudor"));
++    cant_fail(mount("/usr/bin", "/usr/bin", NULL, MS_BIND | MS_NOSUID | MS_RDONLY, NULL));
++    cant_fail(chdir("/usr/bin"));
+     cant_fail(syscall(SYS_pivot_root, ".", "."));
+     cant_fail(umount2(".", MNT_DETACH));
+     cant_fail(chdir("/"));
+-- 
+2.39.1
+
